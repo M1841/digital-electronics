@@ -14,3 +14,5 @@
 *.mcpav
 *.mcpav_callertable.txt
 *.user.dic
+
+board_emulation/
