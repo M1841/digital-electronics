@@ -1,0 +1,15 @@
+*.asm
+*.bmk
+*.brk
+*.cfg
+*.cp
+*.dbg
+*.dct
+*.dlt
+*.hex
+*.log
+*.lst
+*.mcl
+*.mcpav
+*.mcpav_callertable.txt
+*.user.dic
