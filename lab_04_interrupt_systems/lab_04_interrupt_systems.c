@@ -1,4 +1,4 @@
-int position, miliseconds, seconds, minutes;
+int miliseconds, seconds, minutes;
 bit paused, ascending;
 int exercise;
 
@@ -111,33 +111,6 @@ void pd3_isr() iv IVT_ADDR_INT1 ics ICS_AUTO
 
 void timer0_isr() iv IVT_ADDR_TIMER0_COMP ics ICS_AUTO
 {
-    position++;
-
-    switch (position)
-    {
-    case 1:
-    {
-        display(1, seconds % 10, 0);
-        break;
-    }
-    case 2:
-    {
-        display(2, seconds / 10 % 10, 0);
-        break;
-    }
-    case 3:
-    {
-        display(3, minutes % 10, 1);
-        break;
-    }
-    case 4:
-    {
-        display(4, minutes / 10 % 10, 0);
-        position = 0;
-        break;
-    }
-    }
-
     if (miliseconds == 999)
     {
         seconds++;
@@ -153,37 +126,15 @@ void timer0_isr() iv IVT_ADDR_TIMER0_COMP ics ICS_AUTO
     {
         miliseconds++;
     }
+    
+    display(1, seconds % 10, 0);
+    display(2, seconds / 10 % 10, 0);
+    display(3, minutes % 10, 1);
+    display(4, minutes / 10 % 10, 0);
 }
 
 void timer2_isr() iv IVT_ADDR_TIMER2_COMP ics ICS_AUTO
 {
-    position++;
-
-    switch (position)
-    {
-    case 1:
-    {
-        display(1, seconds % 10, 0);
-        break;
-    }
-    case 2:
-    {
-        display(2, seconds / 10 % 10, 0);
-        break;
-    }
-    case 3:
-    {
-        display(3, minutes % 10, 1);
-        break;
-    }
-    case 4:
-    {
-        display(4, minutes / 10 % 10, 0);
-        position = 0;
-        break;
-    }
-    }
-
     if (paused == 0)
     {
         if (ascending == 1)
@@ -223,6 +174,11 @@ void timer2_isr() iv IVT_ADDR_TIMER2_COMP ics ICS_AUTO
             }
         }
     }
+    
+    display(1, seconds % 10, 0);
+    display(2, seconds / 10 % 10, 0);
+    display(3, minutes % 10, 1);
+    display(4, minutes / 10 % 10, 0);
 }
 
 // display the minutes and seconds passed since the program started, using Timer 0
@@ -238,7 +194,7 @@ void exercise_1()
     OCR0 = 125;         // interrupt at 125 (after 1ms)
     TIMSK = 0b00000010; // output compare match interrupt enable
 
-    position = miliseconds = seconds = minutes = 0;
+    miliseconds = seconds = minutes = 0;
 }
 
 // display the minutes and seconds passed since the program started, using Timer 2
@@ -254,7 +210,8 @@ void exercise_2()
     OCR2 = 250;         // interrupt at 250 (after 1ms)
     TIMSK = 0b10000000; // output compare match interrupt enable
 
-    position = miliseconds = seconds = minutes = 0;
+    miliseconds = seconds = minutes = paused = 0;
+    ascending = 1;
 }
 
 // display the minutes and seconds passed since the program started, using Timer 2
@@ -276,7 +233,8 @@ void exercise_3()
     GICR |= 1 << 6;      // INT0 external interrupt enable (PD2 -> input)
     MCUCR |= 0b00000011; // generate interrupts on INT0 rising edges
 
-    position = miliseconds = seconds = minutes = paused = 0;
+    miliseconds = seconds = minutes = paused = 0;
+    ascending = 1;
 }
 
 // display the minutes and seconds passed since the program started, using Timer 2
@@ -299,7 +257,8 @@ void exercise_4()
     GICR |= 0b11000000;  // INT0 & INT1 external interrupt enable (PD2, PD3 -> inputs)
     MCUCR |= 0b00001111; // generate interrupts on INT0 & INT1 rising edges
 
-    position = miliseconds = seconds = minutes = paused = 0;
+    miliseconds = seconds = minutes = paused = 0;
+    ascending = 1;
 }
 
 // display the minutes and seconds passed since the program started, using Timer 2
@@ -321,7 +280,7 @@ void exercise_5()
     GICR |= 1 << 6;      // INT0 external interrupt enable (PD2 -> input)
     MCUCR |= 0b00000011; // generate interrupts on INT0 rising edges
 
-    position = miliseconds = paused = 0;
+    miliseconds = paused = 0;
     ascending = 1;
     minutes = 15;
     seconds = 30;
